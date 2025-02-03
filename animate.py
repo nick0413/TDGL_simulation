@@ -1,3 +1,21 @@
+import logging
+import os
+from contextlib import nullcontext
+from logging import Logger
+from typing import Any, Dict, Literal, Optional, Sequence, Tuple, Union
+
+import h5py
+import numpy as np
+from matplotlib import animation
+from matplotlib import pyplot as plt
+from tqdm import tqdm
+
+from ..device.device import Device
+from ..solution.data import get_data_range
+from .common import DEFAULT_QUANTITIES, PLOT_DEFAULTS, Quantity, auto_grid
+from .io import get_plot_data, get_state_string
+
+
 def create_animation(
     input_file: Union[str, h5py.File],
     *,
@@ -22,7 +40,7 @@ def create_animation(
     writer: Union[str, animation.MovieWriter, None] = None,
     vmin: Optional[Union[float, Sequence[Optional[float]]]] = None,
     vmax: Optional[Union[float, Sequence[Optional[float]]]] = None,
-    cmap: Optional[Union[str, Sequence[Optional[str]]]] = None,
+    cmap: Optional[Union[str, Sequence[Optional[str]]]] = None,  # Renamed from cmap_a to cmap
 ) -> animation.FuncAnimation:
     """Generates, and optionally saves, and animation of a TDGL simulation.
 
