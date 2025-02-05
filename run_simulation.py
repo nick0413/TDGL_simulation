@@ -50,7 +50,7 @@ def make_video_from_solution(
 	
 
 
-def define_4_terminal_mesh(width=0.8, height=0.8, length_units="um", xi=0.1, london_lambda=2, d=0.1):
+def define_4_terminal_mesh(width=0.8, height=0.8, length_units="um", xi=0.1, london_lambda=2, d=0.1, probes=None):
 
 
 	# Material parameters
@@ -69,14 +69,17 @@ def define_4_terminal_mesh(width=0.8, height=0.8, length_units="um", xi=0.1, lon
 	source2 = tdgl.Polygon('source2', points=box(0.1,0.05)).translate(0,-height/2 ).buffer(0)
 	drain2 = tdgl.Polygon('drain2', points=box(0.1,0.05)).translate(0,height/2).buffer(0)
 
+	if probes==None:
+		probes=[((-width*(0.4),-height*(0.4)),
+				(width*(0.4),height*(0.4)),
+				)]
+
 	device=tdgl.Device("2currents",
 				   layer=layer 
 				   ,film=film
 				   ,terminals= [source1,drain1,source2,drain2]
 				   ,length_units=length_units
-				   ,probe_points=[((-width*(0.4),-height*(0.4)),
-					   				(width*(0.4),height*(0.4)),
-									)]
+				   ,probe_points=probes
 				   )
 	
 	return device
