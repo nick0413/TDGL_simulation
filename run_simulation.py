@@ -10,6 +10,8 @@ import tdgl
 from tdgl.geometry import box, circle
 from tdgl.visualization.animate import create_animation
 import tdgl.sources
+import glob
+import re
 
 
 
@@ -126,7 +128,7 @@ def build_mesh(device, max_edge_L=0.025, print=True, plot=True):
 		return fig, ax
 
 
-def current_series(device, min_current=0,max_current=1,n_steps=100,H_field=10,H_units="mT", current_units="uA",solve_time=200):
+def current_series(device, min_current=None,max_current=None,n_steps=None,current_range=None,H_field=10,H_units="mT", current_units="uA",solve_time=200):
 	'''Returns a list of solutions for a range of currents
 	
 	Parameters
@@ -160,9 +162,19 @@ def current_series(device, min_current=0,max_current=1,n_steps=100,H_field=10,H_
 			# gpu=True,
 
 		)	
+	
+
 
 	applied_vector_potential=tdgl.sources.constant.ConstantField(H_field,field_units=options.field_units,length_units=device.length_units)
-	currents = np.linspace(min_current,max_current,n_steps)
+	
+	if type(current_range)==np.ndarray:
+		currents=current_range
+	elif (min_current is not None) and (max_current is not None) and (n_steps is not None):
+		currents = np.linspace(min_current,max_current,n_steps)
+
+	else:
+		raise ValueError("Please provide a current range or min, max and n_steps, provided: ",current_range,min_current,max_current,n_steps)
+	
 	solutions = []
 
 	ii=0
@@ -178,8 +190,22 @@ def current_series(device, min_current=0,max_current=1,n_steps=100,H_field=10,H_
 		)
 		solutions.append(solution)
 		ii+=1
-		print(f"{ii}/{n_steps} done")
+		print(f"{ii}/{len(currents)} done")
 		
 	return solutions, currents
 
 
+
+def get_all_files(folder_path):
+	files = glob.glob(os.path.join(folder_path, '*'))
+	return files
+def extract_numbers(input_string):
+	# Use regular expression to find all numeric values surrounded by underscores
+	numbers = re.findall(r'_(\d+(\.\d+)?)(?=_)', input_string)
+	# print("---",numbers)
+	return [float(num[0]) for num in numbers]
+
+def check_elements_in_list(list1, list2):
+    in_list = [element for element in list1 if element in list2]
+    missing_list = [element for element in list1 if element not in list2]
+    return in_list, missing_list
