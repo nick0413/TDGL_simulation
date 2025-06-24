@@ -1,4 +1,3 @@
-import cupy as cp
 import numpy as np
 import os
 import tempfile
@@ -15,13 +14,13 @@ import re
 
 
 
-def check_system():
-	# Check if the system is running on a GPU
-	if cp.cuda.is_available():
-		print("GPU is available")
-		print("GPU: ", cp.cuda.runtime.getDeviceProperties(0)['name'])
-	else:
-		print('GPU is not available')
+# def check_system():
+# 	# Check if the system is running on a GPU
+# 	if cp.cuda.is_available():
+# 		print("GPU is available")
+# 		print("GPU: ", cp.cuda.runtime.getDeviceProperties(0)['name'])
+# 	else:
+# 		print('GPU is not available')
 
 
 def make_video_from_solution(

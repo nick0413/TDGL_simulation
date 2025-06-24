@@ -1,3 +1,4 @@
 /series
 *.npy
 *.hdf5
+/venv
